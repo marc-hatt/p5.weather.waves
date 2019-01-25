@@ -8,7 +8,7 @@ let maxwindwave;
 let maxwind; // Height of wave
 let temp;
 let degree;
-let xspacing = 4; // Distance between each horizontal location
+let xspacing = 3; // Distance between each horizontal location
 let w; // Width of entire wave
 let theta = 0; // Start angle at 0
 let period = 500.0; // How many pixels before the wave repeats
@@ -16,7 +16,11 @@ let dx; // Value for incrementing x
 let yvalues; // Using an array to store height values for the wave
 let wind;
 let position;
+let NORMAL;
 
+function preload() {
+    NORMAL = loadFont('font/IBMPlexSans-MediumItalic.otf');
+}
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -27,9 +31,9 @@ function setup() {
     wind = createVector();
 
     input = createInput();
-    input.position(width/2-70,height/2);
+    input.position(width/2-80,height-50);
     button=createButton('SUBMIT');
-    button.position(input.x + input.width, height/2);
+    button.position(input.x + input.width, height-50);
     button.mousePressed(reloadJson);
 
     loadJSON(url, gotWeather);//nachdem das json File geladen ist, rufen wir die Funktion gotWeather auf
@@ -38,9 +42,20 @@ function setup() {
 function draw() {
     background(255);
     push();
-    translate(32, height - 32);
+    translate(50, height - 35);
     // Rotate by the wind's angle
     rotate(wind.heading() + PI/2);
+    noStroke();
+    fill(173,216,230);
+    ellipse(0, 0, 48, 48);
+
+    stroke(25, 25, 112);
+    strokeWeight(3);
+    line(0, -16, 0, 16);
+
+    noStroke();
+    fill(25, 25, 112);
+    triangle(0, -18, -6, -10, 6, -10);
     pop();
     calcWave();
     renderWave();
@@ -50,6 +65,17 @@ function draw() {
     renderWave2();
     calcWave3();
     renderWave3();
+    push();
+    textSize(20);
+    fill(25, 25, 112);
+    text("N", 44, 780);
+    pop();
+    push();
+    textSize(40);
+    fill(25, 25, 112);
+    text("Windgeschwindigkeit: "+maxwind +" km/h", 50,100,);
+    pop();
+    textFont(NORMAL);
 }
 
 function calcWave() {
@@ -106,7 +132,7 @@ function calcWave3() {
 
 function renderWave() {
     noStroke();
-    fill(173,216,230);
+    fill(70, 70, 140);
     // A simple way to draw the wave with an ellipse at each location
     for (let x = 0; x < yvalues.length; x++) {
         ellipse(x * xspacing, height / 2 + yvalues[x], 4, 4);
@@ -115,7 +141,7 @@ function renderWave() {
 
 function renderWave1() {
     noStroke();
-    fill(123,176,180);
+    fill(125, 125, 174);
     // A simple way to draw the wave with an ellipse at each location
     for (let x = 0; x < yvalues.length; x++) {
         ellipse(x * xspacing, height / 2 + yvalues[x], 4, 4);
@@ -124,7 +150,7 @@ function renderWave1() {
 
 function renderWave2() {
     noStroke();
-    fill(143,196,200);
+    fill(151, 151, 190);
     // A simple way to draw the wave with an ellipse at each location
     for (let x = 0; x < yvalues.length; x++) {
         ellipse(x * xspacing, height / 2 + yvalues[x], 4, 4);
@@ -133,7 +159,7 @@ function renderWave2() {
 
 function renderWave3() {
     noStroke();
-    fill(193,246,250);
+    fill(25, 25, 112);
     // A simple way to draw the wave with an ellipse at each location
     for (let x = 0; x < yvalues.length; x++) {
         ellipse(x * xspacing, height / 2 + yvalues[x], 4, 4);
@@ -148,8 +174,8 @@ function reloadJson(){
 }
 
 function gotWeather(weather) {
-    maxwindwave=weather.current.wind_mph *3;
-    maxwind=weather.current.wind_mph +0.1;
+    maxwindwave=weather.current.wind_kph *3;
+    maxwind=weather.current.wind_kph;
     temp=weather.current.temp_c;
     degree=weather.current.wind_degree;
     weatherdays=weather.forecast.forecastday;
